@@ -17,6 +17,46 @@ $routes[] = new RouteAlias("contact-us", "home", "contactus", $CacheEnabled);
 
 The constructor for the route is very simple. It takes 4 variables. $alias (the name of the slug you want to see in the url), $controller (the name of the controller you want to hit), $view (the name of the function within the controller), $usecache (whether you want this route to be cached using the frameworks cache engine. There are a few samples in the routes.php file for you to see and you can learn more by checking /classes/routes.class.php
 
+## Responses
+There is an object specificly added for handling the response. In most cases you will want to return a view that contains HTML to a user, but there will also be events where you want to return other things. I have an API in mind when building this, so returning raw XML may be something you want. You may also want to redirect rather than return a view like you would during a user login. Right now I have 2 response types added to the framework. Redirects and views. A redirect is very simple. In your controller method simply use the following.
+```php
+return Response::Redirect("some url");
+```
+Returning views are also quite simple, but there is a lot more flexibility. I will provide a section below that gives a more in depth description on how the views work.
+
+## Views
+There are 2 components to a view that need to be covered here. The first is how to actually return a view from the controller action. You can do this using the same method as a redirect. 
+
+```php
+return Response::View("path-to-iew-file");
+```
+
+This line will work perfectly, but you will often find that you want to pass some data into the view. All variables from the method will not be available in the view file. This is why you need to pass variables to the view. The .NET equivalent here would be using the ViewBag and with Laravel its quite similar. You can do this by calling the AddVar method of the class. You can add as many variables as you like. 
+```php
+return Response::View("path-to-iew-file")->AddVar("pagetitle", $pagetitle)->AddVar("listresults", $listresults);
+```
+### View Template
+The second part of the view is the actual html section of the view with the view template. Each view will use a view template which I will go into more detail with below. Based on what you passed to the view, you can do what you like. The variable can be accessed as if it were declared at the top of the PHP file. There is no markdown language here so just raw HTML and PHP to get the job done. I may upgrade in the future, but part of keeping it lightweight was to keep it simple. I have modeled this roughly off the Laravel system. 
+
+View templates are located in /views/templates. The default template is PublicTemplate.php. This needs to contain the main core of your web page without the content body. In other words, the header and the footer. So how do you get the dynamic content added? There is a helper method to do this called renderTemplateContent("varname"); So if you wanted to add a title tag to your HTML, this needs to be dynamic. Declaring the following will allow you to do so (i will explain how the value gets there after).
+```php
+<title><?php echo renderTemplateContent("pagetitle");?></title>
+```
+So the next part is finding a way to make sure that "pagetitle" actually has a value. This is done in the view file. Previously i mentioned that you can provide a view from the response object in the main controller action. In almost every case a site will have an index, so i will use this as an example. 
+```php
+<?php 
+declareTemplateContent("pagetitle", "Main Index Page");
+
+ob_start();
+?>
+<h1>Thank You</h1>
+<p>This is the body of my home page</p>
+<?php
+$content = ob_get_clean();
+
+declareTemplateContent("maincontent", $content);
+```
+
 ## Database Communication
 Since this is written in PHP, you can communicate with the database in whatever way you wish, but there is a helper library built into the framework that will allow you to make sql queries much easier. You can provide your database details in the config.php file using the following variables.
 ```php
