@@ -1,6 +1,7 @@
 # Simple Mvc Framework
 This is a simple MVC framework that I have built for super light weight web application in PHP. I have aimed to mimmic the ASP.NET MVC4  method of routing, but there are aspects that are also similar to Laravel due to this being written in PHP. 
 
+## Routes
 A route can be defined in multiple ways. The most standard way would be based on the catch all method of http://website.com/{controller}/{functionname}/{optionalid}. This catch all should cover all possible routes that you might need and this will work by default, no matter what you change in the settings. 
 
 There are 2 settings in config.php that will allow you to define a static controller. In other words, this is the main controller that the site will default to. If you are making a simple enough site, one controller might be all you need so using this setting will be perfect. Even when enabled this setting doesnt mean that other controllers can't be used, but those controllers must have their name defined in the url. To access a function from your static controller, you can enable the options below. You will then be able to access a url without needing the controller name and it will default to the static controller and hit that method. For example http://website.com/contactus, where "contactus" is a method name in the static controller class.
@@ -13,6 +14,24 @@ The final way to define a route is explicitly. You may want to have a url such a
 ```php
 $routes[] = new RouteAlias("contact-us", "home", "contactus", $CacheEnabled);
 ```
+
+The constructor for the route is very simple. It takes 4 variables. $alias (the name of the slug you want to see in the url), $controller (the name of the controller you want to hit), $view (the name of the function within the controller), $usecache (whether you want this route to be cached using the frameworks cache engine. There are a few samples in the routes.php file for you to see and you can learn more by checking /classes/routes.class.php
+
+## Database Communication
+Since this is written in PHP, you can communicate with the database in whatever way you wish, but there is a helper library built into the framework that will allow you to make sql queries much easier. You can provide your database details in the config.php file using the following variables.
+```php
+define("DBHOST", "localhost");
+define("DBUSERNAME", "root");
+define("DBPASSWORD", '');
+define("DBNAME", "dbserver");
+```
+You can then perform SQL queries using any of the methods in the /classes/database.class.php. Calling any method of this class will result in the data being logged so you can keep track of any database failures that occur without needing to print them on the screen of a production website. Here is a list of all the supported methods.
+
+1. ExecuteQuery($sql, $fields = null, $autoID = false, $dbstring = null)
+2. GetSQLResults($sql, $fields = null, $multiRow = true, $dbstring = null)
+3. GetCount($sql, $fields, $dbstring = null)
+
+## Page HTML Caching
 To make the framework as efficient and quick as possible, I have built a caching framework directly into the core. In the config.php file, there are 2 constants that can be defined that control the cache. I would suggest that the cache is disabled during development, but once you are ready to go into production the following variables will enable the cache.
 ```php
 define("ENABLECACHE", false);
