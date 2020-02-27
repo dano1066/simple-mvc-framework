@@ -2,7 +2,7 @@
 This is a simple MVC framework that I have built for super light weight web application in PHP. I have aimed to mimmic the ASP.NET MVC4  method of routing, but there are aspects that are also similar to Laravel due to this being written in PHP. 
 
 ## Routes
-A route can be defined in multiple ways. The most standard way would be based on the catch all method of http://website.com/{controller}/{functionname}/{optionalid}. This catch all should cover all possible routes that you might need and this will work by default, no matter what you change in the settings. 
+A route can be defined in multiple ways. The most standard way would be based on the catch all method of website.com/{controller}/{functionname}/{optionalid}. This catch all should cover all possible routes that you might need and this will work by default, no matter what you change in the settings. 
 
 There are 2 settings in config.php that will allow you to define a static controller. In other words, this is the main controller that the site will default to. If you are making a simple enough site, one controller might be all you need so using this setting will be perfect. Even when enabled this setting doesnt mean that other controllers can't be used, but those controllers must have their name defined in the url. To access a function from your static controller, you can enable the options below. You will then be able to access a url without needing the controller name and it will default to the static controller and hit that method. For example http://website.com/contactus, where "contactus" is a method name in the static controller class.
 
